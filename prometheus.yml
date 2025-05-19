@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s # Default scrape interval
+  evaluation_interval: 15s # Default evaluation interval
+
+scrape_configs:
+  - job_name: 'prometheus' # Scrapes Prometheus itself
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'flask-app' # Scrapes the Flask application's /metrics endpoint
+    static_configs:
+      - targets: ['flask-app:5000'] # Docker service name and port
+
+  - job_name: 'otel-collector' # Scrapes metrics exposed by the OpenTelemetry Collector
+    static_configs:
+      - targets: ['otel-collector:8889'] # Docker service name and port for Prometheus exporter
+
+  - job_name: 'jaeger-agent' # Jaeger exposes its own metrics (optional but good for monitoring Jaeger)
+    static_configs:
+      - targets: ['jaeger:16686'] # Jaeger's metrics endpoint (usually on the query service port)
+    metrics_path: /metrics # Default path for Jaeger internal metrics
